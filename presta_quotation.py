@@ -24,10 +24,6 @@
 from openerp.osv import fields, osv
 from mail.mail_message import mail_message
 
-
-class sale_order_line(osv.osv):
-    _inherit = 'sale.order.line'
-
 class sale_order(osv.osv):
     _inherit = 'sale.order'
     def import_presta(self, cr, uid, *args):
