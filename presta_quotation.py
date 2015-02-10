@@ -84,13 +84,13 @@ class sale_order(osv.osv):
                     'price_unit': line['product_price_unit'],
                     'name': 'tmp_name'
                 }
-                # on ajoute les lignes au devis 
+                # On ajoute les lignes au devis 
                 vals['order_line'].append((0,0,line_vals))
-            # on créé le devis
+            # On créé le devis
             order_id = self.create(cr, uid, vals,context)
             order = self.pool.get('sale.order').browse(cr, uid, order_id, context=context)
             warning = ''
-            # on parcourt les lignes pour mettre a jour le nom, les taxes et verifier le prix
+            # On parcourt les lignes pour mettre a jour le nom, les taxes et verifier le prix
             for line in order.order_line:
                 order_line_infos = line.product_id_change(pricelist=order.pricelist_id.id,partner_id=order.partner_id.id,product=line.product_id.id ,update_tax=True, fiscal_position=order.fiscal_position.id, context=None)
                 order_line_infos['value']['tax_id'] = [[6, False, order_line_infos['value']['tax_id']]]
@@ -100,7 +100,7 @@ class sale_order(osv.osv):
                     warning = warning + '<div>' + line.product_id.name + ' -> Le prix differe de plus de 0.05 centimes. Prix de la liste de prix : ' + str(price_open) + '</div>'
                 order_line_infos['value']['price_unit'] = line.price_unit
                 line.write(order_line_infos['value'])
-            # si il y a des différences de prix de plus ou moins 0,05 centimes, on créé une note
+            # Si il y a des différences de prix de plus ou moins 0,05 centimes, on créé une note
             if not warning == '':
                 message_values = {
                     'body' : warning,
@@ -110,6 +110,7 @@ class sale_order(osv.osv):
                 }
                 mail = self.pool.get('mail.message')
                 mail_message.create(mail,cr, uid, message_values, context=context)
+            # On enregistre le numero du devis associé à la commande Pretashop
             cr.execute('UPDATE prestashop.quotation SET id_sale_order = ' + str(order.id) + ' WHERE id_order = ' + str(presta_order['id_order']))
         return True
 

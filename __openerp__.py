@@ -30,9 +30,6 @@
     'depends': [
         'product',
 	'sale',
-        ],
-    'data': [
-        'wizard/update_prestashop_quotation_view.xml',
-    ]
+        ]
 
 }
